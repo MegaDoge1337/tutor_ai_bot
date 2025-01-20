@@ -10,6 +10,7 @@ python = "^3.12"
 openai = "^1.59.8"
 python-dotenv = "^1.0.1"
 aiogram = "^3.17.0"
+pydantic-settings = "^2.7.1"
 
 
 [build-system]
