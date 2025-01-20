@@ -1,9 +1,9 @@
 import asyncio
 import logging
-import os
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters.command import Command
 from config_reader import config
+from llm import LLM
 
 logging.basicConfig(level=logging.INFO)
 
@@ -13,11 +13,18 @@ dp = Dispatcher()
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
-    await message.answer("Hello!")
+    await message.answer("Добро пожаловать!")
 
-@dp.message(Command("rep"))
-async def cmd_start(message: types.Message):
-    await message.reply("Reply to your message!")
+@dp.message(Command("c"))
+async def cmd_c(message: types.Message):
+    if message.entities and message.entities[0].type == "bot_command":
+        command_length = message.entities[0].length
+        text_without_command = message.text[command_length:].strip()
+
+        llm = LLM(base_url=config.llm_base_url, api_key=config.llm_api_key)
+        completion = llm.make_completion(user_prompt=text_without_command)
+
+        await message.reply(f"{completion}")
 
 async def main():
     await dp.start_polling(bot)
