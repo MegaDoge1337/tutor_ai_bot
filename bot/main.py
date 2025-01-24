@@ -21,7 +21,10 @@ async def cmd_c(message: types.Message):
         command_length = message.entities[0].length
         text_without_command = message.text[command_length:].strip()
 
-        llm = LLM(base_url=config.llm_base_url, api_key=config.llm_api_key)
+        llm = LLM(base_url=config.llm_base_url, 
+                  api_key=config.llm_api_key.get_secret_value(), 
+                  model=config.llm_model)
+        
         completion = llm.make_completion(user_prompt=text_without_command)
 
         await message.reply(f"{completion}")
